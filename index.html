@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Lost & Found</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f6f4fb;
+        color: #222;
+        line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+        background: #6d3fc0;
+        color: white;
+        padding: 22px 18px;
+        text-align: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    }
+
+    header h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    header p {
+        font-size: 14px;
+        opacity: 0.95;
+    }
+
+    .container {
+        width: 94%;
+        max-width: 1100px;
+        margin: 25px auto;
+    }
+
+    /* Stats */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 18px 10px;
+        border-radius: 14px;
+        text-align: center;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .stat-card h2 {
+        color: #6d3fc0;
+        font-size: 26px;
+    }
+
+    .stat-card p {
+        font-size: 13px;
+        color: #666;
+    }
+
+    /* Sections */
+    .section {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .section h2 {
+        color: #552a9d;
+        margin-bottom: 18px;
+        font-size: 21px;
+    }
+
+    /* Form */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d5d0df;
+        border-radius: 9px;
+        font-size: 15px;
+        outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #6d3fc0;
+    }
+
+    textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    button {
+        border: none;
+        cursor: pointer;
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .post-btn {
+        background: #6d3fc0;
+        color: white;
+        width: 100%;
+        margin-top: 5px;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .post-btn:hover {
+        background: #552a9d;
+    }
+
+    /* Search */
+    .search-box {
+        margin-bottom: 15px;
+    }
+
+    .search-box input {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        background: #eee9f8;
+        color: #552a9d;
+    }
+
+    .filter-btn.active {
+        background: #6d3fc0;
+        color: white;
+    }
+
+    .demo-btn {
+        background: #333;
+        color: white;
+        margin-top: 15px;
+    }
+
+    /* Items */
+    .items-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .item-card {
+        border: 1px solid #e4dfec;
+        border-radius: 14px;
+        padding: 17px;
+        position: relative;
+        background: #fff;
+    }
+
+    .item-card.claimed {
+        opacity: 0.75;
+        border: 2px solid #4caf50;
+    }
+
+    .item-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .emoji {
+        font-size: 34px;
+        background: #f1ebfb;
+        border-radius: 10px;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .item-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-top: 4px;
+    }
+
+    .lost {
+        background: #ffe4e4;
+        color: #c62828;
+    }
+
+    .found {
+        background: #e2f6e7;
+        color: #25833b;
+    }
+
+    .claimed-badge {
+        background: #d8f2dc;
+        color: #237b32;
+    }
+
+    .item-info {
+        font-size: 13px;
+        color: #555;
+        margin-top: 12px;
+    }
+
+    .item-info p {
+        margin: 6px 0;
+    }
+
+    .description {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #444;
+        background: #f8f7fa;
+        padding: 9px;
+        border-radius: 7px;
+    }
+
+    .card-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .claim-btn {
+        background: #6d3fc0;
+        color: white;
+        flex: 1;
+    }
+
+    .delete-btn {
+        background: #f0eeee;
+        color: #c62828;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 30px;
+        color: #777;
+        grid-column: 1 / -1;
+    }
+
+    /* How to use */
+    .how-to {
+        background: #f1ebfb;
+        border-left: 5px solid #6d3fc0;
+        padding: 17px;
+        border-radius: 8px;
+    }
+
+    .how-to ol {
+        padding-left: 20px;
+    }
+
+    .how-to li {
+        margin: 7px 0;
+    }
+
+    footer {
+        text-align: center;
+        padding: 25px;
+        color: #777;
+        font-size: 13px;
+    }
+
+    /* Mobile */
+    @media (max-width: 750px) {
+        .stats {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+        }
+
+        .stat-card {
+            padding: 13px 5px;
+        }
+
+        .stat-card h2 {
+            font-size: 22px;
+        }
+
+        .stat-card p {
+            font-size: 11px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .items-grid {
+            grid-template-columns: 1fr;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        .section {
+            padding: 17px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 Campus Lost & Found</h1>
+    <p>Student: Arshia Azeem | ID: FA26-BSCS-0182</p>
+</header>
+
+<div class="container">
+
+    <!-- Statistics -->
+    <div class="stats">
+        <div class="stat-card">
+            <h2 id="totalLost">0</h2>
+            <p>Total Lost</p>
+        </div>
+
+        <div class="stat-card">
+            <h2 id="totalFound">0</h2>
+            <p>Total Found</p>
+        </div>
+
+        <div class="stat-card">
+            <h2 id="totalClaimed">0</h2>
+            <p>Total Claimed</p>
+        </div>
+    </div>
+
+    <!-- Report Form -->
+    <div class="section">
+        <h2>📝 Report Lost / Found Item</h2>
+
+        <form id="itemForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="itemName" placeholder="e.g. Black Wallet" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="itemType" required>
+                        <option value="Lost">Lost</option>
+                        <option value="Found">Found</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category" required>
+                        <option value="ID Card">ID Card</option>
+                        <option value="Mobile/Charger">Mobile/Charger</option>
+                        <option value="Notes/Book">Notes/Book</option>
+                        <option value="Bottle/Bag">Bottle/Bag</option>
+                        <option value="Keys">Keys</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="location" placeholder="e.g. Canteen, Lab 3, Library" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" id="contact" placeholder="Your name" required>
+                </div>
+
+                <div class="form-group full">
+                    <label>Description</label>
+                    <textarea id="description" placeholder="Describe the item..."></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <button type="submit" class="post-btn">➕ Post Item</button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="section">
+        <h2>🔎 Find an Item</h2>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search item by name...">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="All">All</button>
+            <button class="filter-btn" data-filter="Lost">Lost</button>
+            <button class="filter-btn" data-filter="Found">Found</button>
+        </div>
+
+        <button class="demo-btn" id="demoBtn">✨ Load Demo Data</button>
+
+        <div class="items-grid" id="itemsContainer"></div>
+    </div>
+
+    <!-- How to Use -->
+    <div class="section">
+        <h2>📖 How to Use</h2>
+
+        <div class="how-to">
+            <ol>
+                <li>Fill in the form to report a lost or found item.</li>
+                <li>Click <strong>Post Item</strong> to add it to the list.</li>
+                <li>Use the search bar to find an item by name.</li>
+                <li>Use <strong>All, Lost,</strong> or <strong>Found</strong> filters.</li>
+                <li>Click <strong>Claim</strong> when an item has been returned to its owner.</li>
+                <li>Click <strong>Delete</strong> to remove an item.</li>
+                <li>Your items are saved automatically in the browser.</li>
+            </ol>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Campus Lost & Found | AICT Assignment | BSCS
+</footer>
+
+<script>
+
+    // Get saved items from localStorage
+    let items = JSON.parse(localStorage.getItem("campusLostFound")) || [];
+
+    let currentFilter = "All";
+
+    // Emoji based on category
+    function getEmoji(category) {
+
+        const emojis = {
+            "ID Card": "🪪",
+            "Mobile/Charger": "📱",
+            "Notes/Book": "📚",
+            "Bottle/Bag": "🎒",
+            "Keys": "🔑",
+            "Other": "📦"
+        };
+
+        return emojis[category] || "📦";
+    }
+
+    // Save items
+    function saveItems() {
+        localStorage.setItem("campusLostFound", JSON.stringify(items));
+    }
+
+    // Update statistics
+    function updateStats() {
+
+        const lost = items.filter(item => item.type === "Lost").length;
+        const found = items.filter(item => item.type === "Found").length;
+        const claimed = items.filter(item => item.claimed).length;
+
+        document.getElementById("totalLost").textContent = lost;
+        document.getElementById("totalFound").textContent = found;
+        document.getElementById("totalClaimed").textContent = claimed;
+    }
+
+    // Display items
+    function displayItems() {
+
+        const container = document.getElementById("itemsContainer");
+        const search = document.getElementById("searchInput").value.toLowerCase();
+
+        let filteredItems = items.filter(item => {
+
+            const matchesSearch =
+                item.name.toLowerCase().includes(search);
+
+            const matchesFilter =
+                currentFilter === "All" ||
+                item.type === currentFilter;
+
+            return matchesSearch && matchesFilter;
+        });
+
+        container.innerHTML = "";
+
+        if (filteredItems.length === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    <h3>🔍 No items found</h3>
+                    <p>Try another search or add a new item.</p>
+                </div>
+            `;
+            return;
+        }
+
+        filteredItems.forEach(item => {
+
+            const card = document.createElement("div");
+
+            card.className =
+                "item-card" + (item.claimed ? " claimed" : "");
+
+            card.innerHTML = `
+
+                <div class="item-top">
+
+                    <div class="emoji">
+                        ${getEmoji(item.category)}
+                    </div>
+
+                    <div>
+                        <div class="item-title">
+                            ${item.name}
+                        </div>
+
+                        ${
+                            item.claimed
+                            ? `<span class="badge claimed-badge">CLAIMED</span>`
+                            : `<span class="badge ${item.type.toLowerCase()}">
+                                ${item.type}
+                              </span>`
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="item-info">
+
+                    <p>📍 <strong>Location:</strong> ${item.location}</p>
+
+                    <p>📅 <strong>Date:</strong> ${item.date}</p>
+
+                    <p>👤 <strong>Contact:</strong> ${item.contact}</p>
+
+                    <p>🏷️ <strong>Category:</strong> ${item.category}</p>
+
+                </div>
+
+                ${
+                    item.description
+                    ? `<div class="description">
+                        ${item.description}
+                       </div>`
+                    : ""
+                }
+
+                <div class="card-buttons">
+
+                    ${
+                        !item.claimed
+                        ? `<button class="claim-btn"
+                            onclick="claimItem(${item.id})">
+                            ✓ Claim
+                           </button>`
+                        : ""
+                    }
+
+                    <button class="delete-btn"
+                        onclick="deleteItem(${item.id})">
+                        🗑 Delete
+                    </button>
+
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+    // Add new item
+    document.getElementById("itemForm").addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        const newItem = {
+
+            id: Date.now(),
+
+            name: document.getElementById("itemName").value.trim(),
+
+            type: document.getElementById("itemType").value,
+
+            category: document.getElementById("category").value,
+
+            location: document.getElementById("location").value.trim(),
+
+            contact: document.getElementById("contact").value.trim(),
+
+            description: document.getElementById("description").value.trim(),
+
+            date: new Date().toLocaleDateString(),
+
+            claimed: false
+        };
+
+        items.unshift(newItem);
+
+        saveItems();
+
+        displayItems();
+
+        updateStats();
+
+        this.reset();
+
+        alert("Item posted successfully! ✅");
+    });
+
+    // Claim item
+    function claimItem(id) {
+
+        const item = items.find(item => item.id === id);
+
+        if (item) {
+
+            item.claimed = true;
+
+            saveItems();
+
+            displayItems();
+
+            updateStats();
+        }
+    }
+
+    // Delete item
+    function deleteItem(id) {
+
+        if (confirm("Are you sure you want to delete this item?")) {
+
+            items = items.filter(item => item.id !== id);
+
+            saveItems();
+
+            displayItems();
+
+            updateStats();
+        }
+    }
+
+    // Search
+    document.getElementById("searchInput")
+        .addEventListener("input", displayItems);
+
+    // Filters
+    document.querySelectorAll(".filter-btn").forEach(button => {
+
+        button.addEventListener("click", function() {
+
+            document.querySelectorAll(".filter-btn")
+                .forEach(btn => btn.classList.remove("active"));
+
+            this.classList.add("active");
+
+            currentFilter = this.dataset.filter;
+
+            displayItems();
+        });
+    });
+
+    // Demo data
+    document.getElementById("demoBtn")
+        .addEventListener("click", function() {
+
+            const demoItems = [
+
+                {
+                    id: Date.now() + 1,
+                    name: "Student ID Card",
+                    type: "Lost",
+                    category: "ID Card",
+                    location: "Library",
+                    contact: "Ayesha",
+                    description: "Blue university ID card.",
+                    date: new Date().toLocaleDateString(),
+                    claimed: false
+                },
+
+                {
+                    id: Date.now() + 2,
+                    name: "Black Water Bottle",
+                    type: "Found",
+                    category: "Bottle/Bag",
+                    location: "Canteen",
+                    contact: "Hassan",
+                    description: "Black bottle found near the tables.",
+                    date: new Date().toLocaleDateString(),
+                    claimed: false
+                },
+
+                {
+                    id: Date.now() + 3,
+                    name: "Programming Book",
+                    type: "Lost",
+                    category: "Notes/Book",
+                    location: "Lab 3",
+                    contact: "Ali",
+                    description: "C++ programming book with notes.",
+                    date: new Date().toLocaleDateString(),
+                    claimed: false
+                },
+
+                {
+                    id: Date.now() + 4,
+                    name: "Car Keys",
+                    type: "Found",
+                    category: "Keys",
+                    location: "Main Gate",
+                    contact: "Sara",
+                    description: "Small key ring with two keys.",
+                    date: new Date().toLocaleDateString(),
+                    claimed: false
+                }
+
+            ];
+
+            // Add demo items
+            items = [...demoItems, ...items];
+
+            saveItems();
+
+            displayItems();
+
+            updateStats();
+
+            alert("4 demo items added! ✨");
+        });
+
+    // Initial display
+    displayItems();
+    updateStats();
+
+</script>
+
+</body>
+</html>
